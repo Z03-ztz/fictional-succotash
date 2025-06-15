@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Bot Cloud Test Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        h1 { color: #333; }
+        button { padding: 15px 30px; margin: 10px; font-size: 1.2em; cursor: pointer; }
+        .status { font-size: 1.1em; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Trading Bot Cloud Test Dashboard</h1>
+    <div class="status" id="botStatus">Loading...</div>
+    <button onclick="sendCommand('/start')">Start Bot</button>
+    <button onclick="sendCommand('/stop')">Stop Bot</button>
+    <button onclick="sendCommand('/emergency_stop')">Emergency Stop</button>
+
+    <script>
+        function updateStatus() {
+            fetch('/status').then(res => res.json()).then(data => {
+                document.getElementById('botStatus').innerHTML =
+                `Capital: ${data.capital}<br>Open Trades: ${data.open_trades}<br>Daily Profit: ${data.daily_profit}<br>
+                Daily Loss: ${data.daily_loss}<br>Session Status: ${data.session_status}<br>Emergency Stop: ${data.emergency_stop}<br>Version: ${data.version}`;
+            });
+        }
+        function sendCommand(endpoint) { fetch(endpoint, { method: 'POST' }).then(res => res.json()).then(data => alert(data.message)); }
+        setInterval(updateStatus, 2000); updateStatus();
+    </script>
+</body>
+</html>
